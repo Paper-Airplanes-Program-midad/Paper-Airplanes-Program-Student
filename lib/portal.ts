@@ -6,9 +6,9 @@ export const portal = {
   accent: "var(--accent-cool)",
   user: {
     id: "stu_001",
-    name: "Layla Haddad",
-    email: "layla@paperairplanes.org",
-    initials: "LH",
+    name: "Anas Almbark",
+    email: "anas@paperairplanes.org",
+    initials: "AA",
     timezone: "Asia/Damascus",
   },
 } as const;
