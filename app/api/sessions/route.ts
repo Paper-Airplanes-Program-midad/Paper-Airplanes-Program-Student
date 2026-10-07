@@ -11,7 +11,7 @@ export async function GET() {
   ]);
   return ok(
     sessions
-      .filter((session) => session.semester === semester.id && session.studentName === user.name)
+      .filter((session) => session.semester === semester.id && session.studentId === user.id)
       .map((session) => ({
         ...session,
         joins: undefined,

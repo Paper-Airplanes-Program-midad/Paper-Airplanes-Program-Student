@@ -14,7 +14,7 @@ export async function PATCH(
   let found = false;
   const rows = await update<Assignment[]>("homework", (current) =>
     current.map((item) => {
-      if (item.id !== id || item.studentName !== user.name) return item;
+      if (item.id !== id || item.studentId !== user.id) return item;
       found = true;
       return {
         ...item,

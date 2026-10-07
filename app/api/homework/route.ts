@@ -10,7 +10,7 @@ export async function GET() {
     read<Session[]>("sessions"),
   ]);
   const mine = homework
-    .filter((item) => item.studentName === user.name)
+    .filter((item) => item.studentId === user.id)
     .sort((a, b) => b.assignedUtc.localeCompare(a.assignedUtc));
   const ids = new Set(mine.map((item) => item.sessionId));
   const now = new Date().toISOString();

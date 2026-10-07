@@ -3,11 +3,10 @@ import { fail, newId, ok, read, update } from "@/lib/db";
 import { readReport, withWeeks } from "@/lib/semester";
 import type { CheckIn, Pair, StoredSemester } from "@/lib/types";
 
-function mine(rows: CheckIn[], semester: string, studentName: string) {
+function mine(rows: CheckIn[], semester: string, studentId: string) {
   return rows
     .filter(
-      (row) =>
-        row.semester === semester && row.by === "student" && row.studentName === studentName,
+      (row) => row.semester === semester && row.by === "student" && row.studentId === studentId,
     )
     .sort((a, b) => b.week - a.week);
 }
@@ -19,7 +18,7 @@ export async function GET() {
     read<CheckIn[]>("checkins"),
     read<StoredSemester>("semester"),
   ]);
-  return ok(mine(rows, semester.id, user.name));
+  return ok(mine(rows, semester.id, user.id));
 }
 
 export async function POST(request: Request) {
@@ -31,7 +30,7 @@ export async function POST(request: Request) {
     read<StoredSemester>("semester"),
   ]);
   const semester = withWeeks(stored);
-  const pair = pairs.find((entry) => entry.student === user.name);
+  const pair = pairs.find((entry) => entry.studentId === user.id);
   if (!pair) return fail("not_paired", 409);
 
   const body = (await request.json()) as { week?: unknown };
@@ -49,7 +48,7 @@ export async function POST(request: Request) {
         row.semester === semester.id &&
         row.week === week &&
         row.by === "student" &&
-        row.studentName === user.name,
+        row.studentId === user.id,
     );
     if (locked) return current;
     return [
@@ -60,6 +59,8 @@ export async function POST(request: Request) {
         by: "student",
         studentName: user.name,
         tutorName: pair.tutor,
+        studentId: user.id,
+        tutorId: pair.tutorId,
         ...report,
         submittedUtc: new Date().toISOString(),
       },
@@ -68,5 +69,5 @@ export async function POST(request: Request) {
   });
 
   if (locked) return fail("locked", 409);
-  return ok(mine(rows, semester.id, user.name));
+  return ok(mine(rows, semester.id, user.id));
 }

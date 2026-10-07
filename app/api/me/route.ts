@@ -24,10 +24,10 @@ async function tutorFor(pair: Pair | undefined): Promise<TutorProfile | null> {
   if (!pair) return null;
 
   const profile = await read<TutorProfile>("tutor-profile").catch(() => null);
-  if (profile?.name === pair.tutor) return profile;
+  if (profile?.id === pair.tutorId) return profile;
 
   return {
-    id: pair.pairId,
+    id: pair.tutorId,
     name: pair.tutor,
     initials: initialsOf(pair.tutor),
     country: { en: "", ar: "" },
@@ -77,10 +77,9 @@ export async function GET() {
   ]);
 
   const semester = withWeeks(stored);
-  const pair = pairs.find((entry) => entry.student === user.name);
+  const pair = pairs.find((entry) => entry.studentId === user.id);
   const mine = checkins.filter(
-    (row) =>
-      row.semester === semester.id && row.by === "student" && row.studentName === user.name,
+    (row) => row.semester === semester.id && row.by === "student" && row.studentId === user.id,
   );
 
   return ok({

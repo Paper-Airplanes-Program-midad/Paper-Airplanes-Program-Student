@@ -13,7 +13,7 @@ export async function GET(
 
   const { id } = await params;
   const session = (await read<Session[]>("sessions")).find((entry) => entry.id === id);
-  if (!session || session.studentName !== user.name || !session.joinUrl) return back;
+  if (!session || session.studentId !== user.id || !session.joinUrl) return back;
   if (sessionState(session, Date.now()) !== "open") return back;
 
   const atUtc = new Date().toISOString();
